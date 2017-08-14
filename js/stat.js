@@ -17,7 +17,7 @@ window.renderStatistics = function (ctx, names, times) {
     height: 270,
     chamfer: 20,
     borderWidth: 3,
-    backgroundColor: '#e08d35',
+    backgroundColor: '#e2e191',
     borderColor: '#3d444f',
     shadowColor: 'rgba(0, 0, 0, 0.7)',
     shadowOffsetX: 10,
@@ -76,18 +76,20 @@ window.renderStatistics = function (ctx, names, times) {
   function drawHistogram() {
     var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
 
+    function drawPlayersNames() {
+
+    }
     function drawHistoColumns() {
-      var h = histoParameters;
       for (var i = 0; i < times.length; i++) {
-        var currTime = Math.round(times[i]);
         ctx.fillStyle = 'blue';
         ctx.globalAlpha = window.tools.getRandomNumber(0.2, 1).toFixed(2);
-        ctx.fillRect(h.histoStartX + i * (h.columnWidth + h.spaceBetweenColumns), h.histoStartY, h.columnWidth, -(currTime * columnStep.toFixed(3)));
+        drawSingleColumn(i, histoParameters);
         ctx.globalAlpha = 1;
       }
     }
-    function drawPlayersNames() {
-
+    function drawSingleColumn(i, arr) {
+      var currTime = Math.round(times[i]);
+      ctx.fillRect(arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns), arr.histoStartY, arr.columnWidth, -(currTime * columnStep.toFixed(3)));
     }
 
     drawHistoColumns();
