@@ -1,6 +1,20 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
+  // Геометрия окна статистики
+  var drawStatisticsRectangle = function () {
+    ctx.beginPath();
+    ctx.moveTo(100, 30);
+    ctx.lineTo(100, 260);
+    ctx.lineTo(120, 280);
+    ctx.lineTo(500, 280);
+    ctx.lineTo(520, 260);
+    ctx.lineTo(520, 30);
+    ctx.lineTo(500, 10);
+    ctx.lineTo(120, 10);
+    ctx.closePath();
+  };
+
   // Тень окна статистики
   ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
   ctx.shadowOffsetY = 10;
@@ -8,16 +22,7 @@ window.renderStatistics = function (ctx, names, times) {
 
   // Фон окна статистики
   ctx.fillStyle = '#6d86af';
-  ctx.beginPath();
-  ctx.moveTo(100, 30);
-  ctx.lineTo(100, 260);
-  ctx.lineTo(120, 280);
-  ctx.lineTo(500, 280);
-  ctx.lineTo(520, 260);
-  ctx.lineTo(520, 30);
-  ctx.lineTo(500, 10);
-  ctx.lineTo(120, 10);
-  ctx.closePath();
+  drawStatisticsRectangle();
   ctx.fill();
 
   // Возвращение значений по-умолчанию для тени
@@ -27,15 +32,51 @@ window.renderStatistics = function (ctx, names, times) {
   // Рамка окна статистики
   ctx.lineWidth = 3;
   ctx.strokeStyle = '#3d444f';
-  ctx.beginPath();
-  ctx.moveTo(100, 30);
-  ctx.lineTo(100, 260);
-  ctx.lineTo(120, 280);
-  ctx.lineTo(500, 280);
-  ctx.lineTo(520, 260);
-  ctx.lineTo(520, 30);
-  ctx.lineTo(500, 10);
-  ctx.lineTo(120, 10);
-  ctx.closePath();
+  drawStatisticsRectangle();
   ctx.stroke();
+
+  // Заголовок
+  ctx.font = '16px "PT Mono"';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#000';
+  ctx.fillText('Ура вы победили!', 310, 40);
+  ctx.fillText('Список результатов:', 310, 60);
+
+  // Гистограмма
+  var histoParameters = {
+    histoStartX: 120,
+    histoStartY: 200,
+    histoHeight: 150,
+    columnWidth: 40,
+    spaceBetweenColumns: 50,
+    userColumnColor: 'rgba(255, 0, 0, 1)',
+    otherPlayersColor: 'blue'
+  };
+  var drawHistogram = function () {
+    var maxTime = -1;
+
+    for (var i = 0; i < times.length; i++) {
+      var currTime = times[i];
+      if (currTime > maxTime) {
+        maxTime = currTime;
+      }
+    }
+
+    var columnStep = histoParameters.histoHeight / Math.round(maxTime);
+
+    var drawHistoColumns = function () {
+      var h = histoParameters;
+
+      for (i = 0; i < times.length; i++) {
+        currTime = Math.round(times[i]);
+        ctx.fillStyle = 'blue';
+        ctx.globalAlpha = window.tools.getRandomNumber(0.2, 1).toFixed(2);
+        ctx.fillRect(h.histoStartX + i * (h.columnWidth + h.spaceBetweenColumns), h.histoStartY, h.columnWidth, -(currTime * columnStep.toFixed(3)));
+        ctx.globalAlpha = 1;
+      }
+
+    };
+    drawHistoColumns();
+  };
+  drawHistogram();
 };
