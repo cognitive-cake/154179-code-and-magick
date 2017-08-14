@@ -10,30 +10,46 @@ window.renderStatistics = function (ctx, names, times) {
     userColumnColor: 'rgba(255, 0, 0, 1)',
     otherPlayersColor: 'blue'
   };
+  var windowGeometry = {
+    startX: 100,
+    startY: 10,
+    width: 420,
+    height: 270,
+    chamfer: 20,
+    borderWidth: 3,
+    backgroundColor: '#e08d35',
+    borderColor: '#3d444f',
+    shadowColor: 'rgba(0, 0, 0, 0.7)',
+    shadowOffsetX: 10,
+    shadowOffsetY: 10,
+    titleFont: '16px "PT Mono"',
+    titleFontAlign: 'center',
+    titleFontColor: '#000'
+  };
 
   // Геометрия окна статистики
-  function drawStatisticsRectangle() {
+  function drawStatisticsRectangle(arr) {
     ctx.beginPath();
-    ctx.moveTo(100, 30);
-    ctx.lineTo(100, 260);
-    ctx.lineTo(120, 280);
-    ctx.lineTo(500, 280);
-    ctx.lineTo(520, 260);
-    ctx.lineTo(520, 30);
-    ctx.lineTo(500, 10);
-    ctx.lineTo(120, 10);
+    ctx.moveTo(arr.startX, arr.startY + arr.chamfer);
+    ctx.lineTo(arr.startX, arr.startY + arr.height - arr.chamfer);
+    ctx.lineTo(arr.startX + arr.chamfer, arr.startY + arr.height);
+    ctx.lineTo(arr.startX + arr.width - arr.chamfer, arr.startY + arr.height);
+    ctx.lineTo(arr.startX + arr.width, arr.startY + arr.height - arr.chamfer);
+    ctx.lineTo(arr.startX + arr.width, arr.startY + arr.chamfer);
+    ctx.lineTo(arr.startX + arr.width - arr.chamfer, arr.startY);
+    ctx.lineTo(arr.startX + arr.chamfer, arr.startY);
     ctx.closePath();
   }
 
   function drawStatisticsWindow() {
     // Тень окна статистики
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-    ctx.shadowOffsetY = 10;
-    ctx.shadowOffsetX = 10;
+    ctx.shadowColor = windowGeometry.shadowColor;
+    ctx.shadowOffsetY = windowGeometry.shadowOffsetY;
+    ctx.shadowOffsetX = windowGeometry.shadowOffsetX;
 
     // Фон окна статистики
-    ctx.fillStyle = '#6d86af';
-    drawStatisticsRectangle();
+    ctx.fillStyle = windowGeometry.backgroundColor;
+    drawStatisticsRectangle(windowGeometry);
     ctx.fill();
 
     // Возвращение значений по-умолчанию для тени
@@ -42,22 +58,24 @@ window.renderStatistics = function (ctx, names, times) {
   }
 
   function drawStatisticsBorder() {
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#3d444f';
-    drawStatisticsRectangle();
+    ctx.lineWidth = windowGeometry.borderWidth;
+    ctx.strokeStyle = windowGeometry.borderColor;
+    drawStatisticsRectangle(windowGeometry);
     ctx.stroke();
   }
 
   function drawStatisticsTitle() {
-    ctx.font = '16px "PT Mono"';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#000';
+    ctx.font = windowGeometry.titleFont;
+    ctx.textAlign = windowGeometry.titleFontAlign;
+    ctx.fillStyle = windowGeometry.titleFontColor;
     ctx.fillText('Ура вы победили!', 310, 40);
     ctx.fillText('Список результатов:', 310, 60);
   }
 
   // Гистограмма
   function drawHistogram() {
+    var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
+
     function drawHistoColumns() {
       var h = histoParameters;
       for (var i = 0; i < times.length; i++) {
@@ -68,10 +86,12 @@ window.renderStatistics = function (ctx, names, times) {
         ctx.globalAlpha = 1;
       }
     }
+    function drawPlayersNames() {
 
-    var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
+    }
 
     drawHistoColumns();
+    drawPlayersNames();
   }
 
   drawStatisticsWindow();
