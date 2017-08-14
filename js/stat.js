@@ -2,8 +2,8 @@
 
 window.renderStatistics = function (ctx, names, times) {
   var histoParameters = {
-    histoStartX: 120,
-    histoStartY: 200,
+    histoStartX: 130,
+    histoStartY: 240,
     histoHeight: 150,
     columnWidth: 40,
     spaceBetweenColumns: 50,
@@ -58,28 +58,19 @@ window.renderStatistics = function (ctx, names, times) {
 
   // Гистограмма
   function drawHistogram() {
-    var maxTime = -1;
-
-    for (var i = 0; i < times.length; i++) {
-      var currTime = times[i];
-      if (currTime > maxTime) {
-        maxTime = currTime;
-      }
-    }
-
-    var columnStep = histoParameters.histoHeight / Math.round(maxTime);
-
     function drawHistoColumns() {
       var h = histoParameters;
-
-      for (i = 0; i < times.length; i++) {
-        currTime = Math.round(times[i]);
+      for (var i = 0; i < times.length; i++) {
+        var currTime = Math.round(times[i]);
         ctx.fillStyle = 'blue';
         ctx.globalAlpha = window.tools.getRandomNumber(0.2, 1).toFixed(2);
         ctx.fillRect(h.histoStartX + i * (h.columnWidth + h.spaceBetweenColumns), h.histoStartY, h.columnWidth, -(currTime * columnStep.toFixed(3)));
         ctx.globalAlpha = 1;
       }
     }
+
+    var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
+
     drawHistoColumns();
   }
 
