@@ -1,10 +1,12 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
+  // Тень окна статистики
   ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
   ctx.shadowOffsetY = 10;
   ctx.shadowOffsetX = 10;
 
+  // Фон окна статистики
   ctx.fillStyle = '#6d86af';
   ctx.beginPath();
   ctx.moveTo(100, 30);
@@ -18,9 +20,11 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.closePath();
   ctx.fill();
 
+  // Возвращение значений по-умолчанию для тени
   ctx.shadowOffsetY = 0;
   ctx.shadowOffsetX = 0;
 
+  // Рамка окна статистики
   ctx.lineWidth = 3;
   ctx.strokeStyle = '#3d444f';
   ctx.beginPath();
@@ -34,8 +38,4 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.lineTo(120, 10);
   ctx.closePath();
   ctx.stroke();
-  // ctx.fillStyle = '#6d86af';
-  // ctx.fillRect(100, 10, 420, 270);
-  // ctx.strokeStyle = 'lightgrey';
-  // ctx.strokeRect(100, 10, 420, 270);
 };
