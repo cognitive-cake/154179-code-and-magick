@@ -1,6 +1,7 @@
 'use strict';
 
 window.renderStatistics = function (ctx, names, times) {
+  // Параметры гистограммы
   var histoParameters = {
     histoStartX: 150,
     histoStartY: 240,
@@ -23,6 +24,7 @@ window.renderStatistics = function (ctx, names, times) {
     timesTextColor: '#000',
     timesMargin: 10
   };
+  // Параметры окна, в котором рисуется гистограмма
   var windowGeometry = {
     startX: 100,
     startY: 10,
@@ -60,6 +62,7 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.closePath();
   }
 
+  // Отрисовка окна для статистики
   function drawStatisticsWindow() {
     ctx.shadowColor = windowGeometry.shadowColor;
     ctx.shadowOffsetY = windowGeometry.shadowOffsetY;
@@ -73,6 +76,7 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.shadowOffsetX = windowGeometry.shadowOffsetDefault;
   }
 
+  // Отрисовка рамки окна
   function drawStatisticsBorder() {
     ctx.lineWidth = windowGeometry.borderWidth;
     ctx.strokeStyle = windowGeometry.borderColor;
@@ -80,6 +84,7 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.stroke();
   }
 
+  // Отрисовка заголовка
   function drawStatisticsTitle() {
     ctx.font = windowGeometry.titleFont;
     ctx.textAlign = windowGeometry.titleTextAlign;
