@@ -20,7 +20,8 @@ window.renderStatistics = function (ctx, names, times) {
     namesStartY: 260,
     timesFont: '15px "PT Mono"',
     timesTextAlign: 'center',
-    timesTextColor: '#000'
+    timesTextColor: '#000',
+    timesMargin: 10
   };
   var windowGeometry = {
     startX: 100,
@@ -96,12 +97,10 @@ window.renderStatistics = function (ctx, names, times) {
     function drawPlayersNames(arr) {
       for (var i = 0; i < names.length; i++) {
         var currentName = names[i];
+
         if (currentName === arr.playerName) {
           userIndex = i;
         }
-        ctx.font = arr.namesFont;
-        ctx.textAlign = arr.namesTextAlign;
-        ctx.fillStyle = arr.namesTextColor;
         drawSingleName(currentName, i, histoParameters);
       }
     }
@@ -118,9 +117,21 @@ window.renderStatistics = function (ctx, names, times) {
         ctx.globalAlpha = arr.opacityDefault;
       }
     }
+    // Отрисовка времени каждого игрока
+    function drawPlayersTimes() {
+      for (var i = 0; i < times.length; i++) {
+        var currentTime = Math.round(times[i]);
+        drawSingleTime(currentTime, i, histoParameters);
+      }
+    }
+
     // Отрисовка единичного имени
     function drawSingleName(name, i, arr) {
       var columnCenterX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns) + arr.columnWidth / 2;
+
+      ctx.font = arr.namesFont;
+      ctx.textAlign = arr.namesTextAlign;
+      ctx.fillStyle = arr.namesTextColor;
       ctx.fillText(name, columnCenterX, arr.namesStartY);
     }
     // Отрисовка единичной колонки
@@ -128,11 +139,24 @@ window.renderStatistics = function (ctx, names, times) {
       var currentTime = Math.round(times[i]);
       var columnX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns);
       var columnHeight = currentTime * columnStep.toFixed(arr.histoPrecision);
+
       ctx.fillRect(columnX, arr.histoStartY, arr.columnWidth, -columnHeight);
+    }
+    // Отрисовка единичного времени
+    function drawSingleTime(time, i, arr) {
+      var columnCenterX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns) + arr.columnWidth / 2;
+      var columnHeight = time * columnStep.toFixed(arr.histoPrecision);
+      var columnTopY = arr.histoStartY - columnHeight;
+
+      ctx.font = arr.timesFont;
+      ctx.textAlign = arr.timesTextAlign;
+      ctx.fillStyle = arr.timesTextColor;
+      ctx.fillText(time, columnCenterX, columnTopY - arr.timesMargin);
     }
 
     drawPlayersNames(histoParameters);
     drawHistoColumns(histoParameters);
+    drawPlayersTimes();
   }
 
   drawStatisticsWindow();
