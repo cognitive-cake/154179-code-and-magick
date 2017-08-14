@@ -2,7 +2,7 @@
 
 window.renderStatistics = function (ctx, names, times) {
   var histoParameters = {
-    histoStartX: 130,
+    histoStartX: 150,
     histoStartY: 240,
     histoHeight: 150,
     columnWidth: 40,
@@ -13,7 +13,14 @@ window.renderStatistics = function (ctx, names, times) {
     histoPrecision: 2,
     opacityMin: 0.2,
     opacityMax: 1,
-    opacityDefault: 1
+    opacityDefault: 1,
+    namesFont: '15px "PT Mono"',
+    namesTextAlign: 'center',
+    namesTextColor: '#000',
+    namesStartY: 260,
+    timesFont: '15px "PT Mono"',
+    timesTextAlign: 'center',
+    timesTextColor: '#000'
   };
   var windowGeometry = {
     startX: 100,
@@ -32,8 +39,8 @@ window.renderStatistics = function (ctx, names, times) {
     shadowOffsetY: 10,
     shadowOffsetDefault: 0,
     titleFont: '16px "PT Mono"',
-    titleFontAlign: 'center',
-    titleFontColor: '#000',
+    titleTextAlign: 'center',
+    titleTextColor: '#000',
     titleFirstLineY: 40,
     titleSecondLineY: 60
   };
@@ -74,8 +81,8 @@ window.renderStatistics = function (ctx, names, times) {
 
   function drawStatisticsTitle() {
     ctx.font = windowGeometry.titleFont;
-    ctx.textAlign = windowGeometry.titleFontAlign;
-    ctx.fillStyle = windowGeometry.titleFontColor;
+    ctx.textAlign = windowGeometry.titleTextAlign;
+    ctx.fillStyle = windowGeometry.titleTextColor;
     ctx.fillText('Ура вы победили!', windowGeometry.centerX, windowGeometry.titleFirstLineY);
     ctx.fillText('Список результатов:', windowGeometry.centerX, windowGeometry.titleSecondLineY);
   }
@@ -86,12 +93,16 @@ window.renderStatistics = function (ctx, names, times) {
     var userIndex;
 
     // Отрисовка имен игроков
-    function drawPlayersNames() {
+    function drawPlayersNames(arr) {
       for (var i = 0; i < names.length; i++) {
         var currentName = names[i];
-        if (currentName === histoParameters.playerName) {
+        if (currentName === arr.playerName) {
           userIndex = i;
         }
+        ctx.font = arr.namesFont;
+        ctx.textAlign = arr.namesTextAlign;
+        ctx.fillStyle = arr.namesTextColor;
+        drawSingleName(currentName, i, histoParameters);
       }
     }
     // Отрисовка колонок
@@ -107,13 +118,20 @@ window.renderStatistics = function (ctx, names, times) {
         ctx.globalAlpha = arr.opacityDefault;
       }
     }
+    // Отрисовка единичного имени
+    function drawSingleName(name, i, arr) {
+      var columnCenterX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns) + arr.columnWidth / 2;
+      ctx.fillText(name, columnCenterX, arr.namesStartY);
+    }
     // Отрисовка единичной колонки
     function drawSingleColumn(i, arr) {
       var currentTime = Math.round(times[i]);
-      ctx.fillRect(arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns), arr.histoStartY, arr.columnWidth, -(currentTime * columnStep.toFixed(arr.histoPrecision)));
+      var columnX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns);
+      var columnHeight = currentTime * columnStep.toFixed(arr.histoPrecision);
+      ctx.fillRect(columnX, arr.histoStartY, arr.columnWidth, -columnHeight);
     }
 
-    drawPlayersNames();
+    drawPlayersNames(histoParameters);
     drawHistoColumns(histoParameters);
   }
 
