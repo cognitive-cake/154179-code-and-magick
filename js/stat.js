@@ -30,8 +30,8 @@ window.renderStatistics = function (ctx, names, times) {
     startY: 10,
     width: 420,
     height: 270,
-    get centerX() { // Вот про это я ничего не знаю =) Просто нагуглил ))
-      return this.width / 2 + this.startX;
+    centerX: function () {
+      return windowGeometry.width / 2 + windowGeometry.startX;
     },
     chamfer: 20,
     borderWidth: 3,
@@ -89,8 +89,8 @@ window.renderStatistics = function (ctx, names, times) {
     ctx.font = windowGeometry.titleFont;
     ctx.textAlign = windowGeometry.titleTextAlign;
     ctx.fillStyle = windowGeometry.titleTextColor;
-    ctx.fillText('Ура вы победили!', windowGeometry.centerX, windowGeometry.titleFirstLineY);
-    ctx.fillText('Список результатов:', windowGeometry.centerX, windowGeometry.titleSecondLineY);
+    ctx.fillText('Ура вы победили!', windowGeometry.centerX(), windowGeometry.titleFirstLineY);
+    ctx.fillText('Список результатов:', windowGeometry.centerX(), windowGeometry.titleSecondLineY);
   }
 
   // Гистограмма
