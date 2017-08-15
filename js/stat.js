@@ -4,7 +4,7 @@ window.renderStatistics = function (ctx, names, times) {
   // Параметры гистограммы
   var histoParameters = {
     histoStartX: 150,
-    histoStartY: 240,
+    histoStartY: 250,
     histoHeight: 150,
     columnWidth: 40,
     spaceBetweenColumns: 50,
@@ -18,7 +18,7 @@ window.renderStatistics = function (ctx, names, times) {
     namesFont: '15px "PT Mono"',
     namesTextAlign: 'center',
     namesTextColor: '#000',
-    namesStartY: 260,
+    namesStartY: 265,
     timesFont: '15px "PT Mono"',
     timesTextAlign: 'center',
     timesTextColor: '#000',
@@ -49,16 +49,16 @@ window.renderStatistics = function (ctx, names, times) {
   };
 
   // Геометрия окна статистики
-  function drawStatisticsRectangle(arr) {
+  function drawStatisticsRectangle(obj) {
     ctx.beginPath();
-    ctx.moveTo(arr.startX, arr.startY + arr.chamfer);
-    ctx.lineTo(arr.startX, arr.startY + arr.height - arr.chamfer);
-    ctx.lineTo(arr.startX + arr.chamfer, arr.startY + arr.height);
-    ctx.lineTo(arr.startX + arr.width - arr.chamfer, arr.startY + arr.height);
-    ctx.lineTo(arr.startX + arr.width, arr.startY + arr.height - arr.chamfer);
-    ctx.lineTo(arr.startX + arr.width, arr.startY + arr.chamfer);
-    ctx.lineTo(arr.startX + arr.width - arr.chamfer, arr.startY);
-    ctx.lineTo(arr.startX + arr.chamfer, arr.startY);
+    ctx.moveTo(obj.startX, obj.startY + obj.chamfer);
+    ctx.lineTo(obj.startX, obj.startY + obj.height - obj.chamfer);
+    ctx.lineTo(obj.startX + obj.chamfer, obj.startY + obj.height);
+    ctx.lineTo(obj.startX + obj.width - obj.chamfer, obj.startY + obj.height);
+    ctx.lineTo(obj.startX + obj.width, obj.startY + obj.height - obj.chamfer);
+    ctx.lineTo(obj.startX + obj.width, obj.startY + obj.chamfer);
+    ctx.lineTo(obj.startX + obj.width - obj.chamfer, obj.startY);
+    ctx.lineTo(obj.startX + obj.chamfer, obj.startY);
     ctx.closePath();
   }
 
@@ -99,27 +99,27 @@ window.renderStatistics = function (ctx, names, times) {
     var userIndex;
 
     // Отрисовка имен игроков
-    function drawPlayersNames(arr) {
+    function drawPlayersNames(obj) {
       for (var i = 0; i < names.length; i++) {
         var currentName = names[i];
 
-        if (currentName === arr.playerName) {
+        if (currentName === obj.playerName) {
           userIndex = i;
         }
         drawSingleName(currentName, i, histoParameters);
       }
     }
     // Отрисовка колонок
-    function drawHistoColumns(arr) {
+    function drawHistoColumns(obj) {
       for (var i = 0; i < times.length; i++) {
         if (userIndex === i) {
-          ctx.fillStyle = arr.userColumnColor;
+          ctx.fillStyle = obj.userColumnColor;
         } else {
-          ctx.globalAlpha = window.tools.getRandomNumber(arr.opacityMin, arr.opacityMax).toFixed(arr.histoPrecision);
-          ctx.fillStyle = arr.otherPlayersColor;
+          ctx.globalAlpha = window.tools.getRandomNumber(obj.opacityMin, obj.opacityMax).toFixed(obj.histoPrecision);
+          ctx.fillStyle = obj.otherPlayersColor;
         }
         drawSingleColumn(i, histoParameters);
-        ctx.globalAlpha = arr.opacityDefault;
+        ctx.globalAlpha = obj.opacityDefault;
       }
     }
     // Отрисовка времени каждого игрока
@@ -131,32 +131,32 @@ window.renderStatistics = function (ctx, names, times) {
     }
 
     // Отрисовка единичного имени
-    function drawSingleName(name, i, arr) {
-      var columnCenterX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns) + arr.columnWidth / 2;
+    function drawSingleName(name, i, obj) {
+      var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
 
-      ctx.font = arr.namesFont;
-      ctx.textAlign = arr.namesTextAlign;
-      ctx.fillStyle = arr.namesTextColor;
-      ctx.fillText(name, columnCenterX, arr.namesStartY);
+      ctx.font = obj.namesFont;
+      ctx.textAlign = obj.namesTextAlign;
+      ctx.fillStyle = obj.namesTextColor;
+      ctx.fillText(name, columnCenterX, obj.namesStartY);
     }
     // Отрисовка единичной колонки
-    function drawSingleColumn(i, arr) {
+    function drawSingleColumn(i, obj) {
       var currentTime = Math.round(times[i]);
-      var columnX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns);
-      var columnHeight = currentTime * columnStep.toFixed(arr.histoPrecision);
+      var columnX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns);
+      var columnHeight = currentTime * columnStep.toFixed(obj.histoPrecision);
 
-      ctx.fillRect(columnX, arr.histoStartY, arr.columnWidth, -columnHeight);
+      ctx.fillRect(columnX, obj.histoStartY, obj.columnWidth, -columnHeight);
     }
     // Отрисовка единичного времени
-    function drawSingleTime(time, i, arr) {
-      var columnCenterX = arr.histoStartX + i * (arr.columnWidth + arr.spaceBetweenColumns) + arr.columnWidth / 2;
-      var columnHeight = time * columnStep.toFixed(arr.histoPrecision);
-      var columnTopY = arr.histoStartY - columnHeight;
+    function drawSingleTime(time, i, obj) {
+      var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
+      var columnHeight = time * columnStep.toFixed(obj.histoPrecision);
+      var columnTopY = obj.histoStartY - columnHeight;
 
-      ctx.font = arr.timesFont;
-      ctx.textAlign = arr.timesTextAlign;
-      ctx.fillStyle = arr.timesTextColor;
-      ctx.fillText(time, columnCenterX, columnTopY - arr.timesMargin);
+      ctx.font = obj.timesFont;
+      ctx.textAlign = obj.timesTextAlign;
+      ctx.fillStyle = obj.timesTextColor;
+      ctx.fillText(time, columnCenterX, columnTopY - obj.timesMargin);
     }
 
     drawPlayersNames(histoParameters);
