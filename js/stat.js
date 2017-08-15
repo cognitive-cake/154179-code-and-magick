@@ -103,9 +103,8 @@
   // Гистограмма
   function drawHistogram(ctx, names, times) {
     var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
-    var userIndex = window.tools.findValue(names, histoParameters.playerName);
     drawPlayersNames(ctx, names);
-    drawHistoColumns(ctx, userIndex, times, histoParameters, columnStep);
+    drawHistoColumns(ctx, names, times, histoParameters, columnStep);
     drawPlayersTimes(ctx, times, columnStep);
   }
   // Отрисовка имен игроков
@@ -116,7 +115,8 @@
     }
   }
   // Отрисовка колонок
-  function drawHistoColumns(ctx, userIndex, times, obj, columnStep) {
+  function drawHistoColumns(ctx, names, times, obj, columnStep) {
+    var userIndex = names.indexOf(obj.playerName);
     for (var i = 0; i < times.length; i++) {
       if (userIndex === i) {
         ctx.fillStyle = obj.userColumnColor;
