@@ -1,6 +1,13 @@
 'use strict';
 
-window.renderStatistics = function (ctx, names, times) {
+(function () {
+  window.renderStatistics = function (ctx, names, times) {
+    drawStatisticsWindow(ctx);
+    drawStatisticsBorder(ctx);
+    drawStatisticsTitle(ctx);
+    drawHistogram(ctx, names, times);
+  };
+
   // Параметры гистограммы
   var histoParameters = {
     histoStartX: 150,
@@ -49,7 +56,7 @@ window.renderStatistics = function (ctx, names, times) {
   };
 
   // Геометрия окна статистики
-  function drawStatisticsRectangle(obj) {
+  function drawStatisticsRectangle(ctx, obj) {
     ctx.beginPath();
     ctx.moveTo(obj.startX, obj.startY + obj.chamfer);
     ctx.lineTo(obj.startX, obj.startY + obj.height - obj.chamfer);
@@ -63,13 +70,13 @@ window.renderStatistics = function (ctx, names, times) {
   }
 
   // Отрисовка окна для статистики
-  function drawStatisticsWindow() {
+  function drawStatisticsWindow(ctx) {
     ctx.shadowColor = windowGeometry.shadowColor;
     ctx.shadowOffsetY = windowGeometry.shadowOffsetY;
     ctx.shadowOffsetX = windowGeometry.shadowOffsetX;
 
     ctx.fillStyle = windowGeometry.backgroundColor;
-    drawStatisticsRectangle(windowGeometry);
+    drawStatisticsRectangle(ctx, windowGeometry);
     ctx.fill();
 
     ctx.shadowOffsetY = windowGeometry.shadowOffsetDefault;
@@ -77,15 +84,15 @@ window.renderStatistics = function (ctx, names, times) {
   }
 
   // Отрисовка рамки окна
-  function drawStatisticsBorder() {
+  function drawStatisticsBorder(ctx) {
     ctx.lineWidth = windowGeometry.borderWidth;
     ctx.strokeStyle = windowGeometry.borderColor;
-    drawStatisticsRectangle(windowGeometry);
+    drawStatisticsRectangle(ctx, windowGeometry);
     ctx.stroke();
   }
 
   // Отрисовка заголовка
-  function drawStatisticsTitle() {
+  function drawStatisticsTitle(ctx) {
     ctx.font = windowGeometry.titleFont;
     ctx.textAlign = windowGeometry.titleTextAlign;
     ctx.fillStyle = windowGeometry.titleTextColor;
@@ -94,78 +101,67 @@ window.renderStatistics = function (ctx, names, times) {
   }
 
   // Гистограмма
-  function drawHistogram() {
+  function drawHistogram(ctx, names, times) {
     var columnStep = histoParameters.histoHeight / Math.round(window.tools.getMaxValue(times));
-    var userIndex;
-
-    // Отрисовка имен игроков
-    function drawPlayersNames(obj) {
-      for (var i = 0; i < names.length; i++) {
-        var currentName = names[i];
-
-        if (currentName === obj.playerName) {
-          userIndex = i;
-        }
-        drawSingleName(currentName, i, histoParameters);
+    var userIndex = window.tools.findValue(names, histoParameters.playerName);
+    drawPlayersNames(ctx, names);
+    drawHistoColumns(ctx, userIndex, times, histoParameters, columnStep);
+    drawPlayersTimes(ctx, times, columnStep);
+  }
+  // Отрисовка имен игроков
+  function drawPlayersNames(ctx, names) {
+    for (var i = 0; i < names.length; i++) {
+      var currentName = names[i];
+      drawSingleName(ctx, currentName, i, histoParameters);
+    }
+  }
+  // Отрисовка колонок
+  function drawHistoColumns(ctx, userIndex, times, obj, columnStep) {
+    for (var i = 0; i < times.length; i++) {
+      if (userIndex === i) {
+        ctx.fillStyle = obj.userColumnColor;
+      } else {
+        ctx.globalAlpha = window.tools.getRandomNumber(obj.opacityMin, obj.opacityMax).toFixed(obj.histoPrecision);
+        ctx.fillStyle = obj.otherPlayersColor;
       }
+      drawSingleColumn(ctx, times, i, histoParameters, columnStep);
+      ctx.globalAlpha = obj.opacityDefault;
     }
-    // Отрисовка колонок
-    function drawHistoColumns(obj) {
-      for (var i = 0; i < times.length; i++) {
-        if (userIndex === i) {
-          ctx.fillStyle = obj.userColumnColor;
-        } else {
-          ctx.globalAlpha = window.tools.getRandomNumber(obj.opacityMin, obj.opacityMax).toFixed(obj.histoPrecision);
-          ctx.fillStyle = obj.otherPlayersColor;
-        }
-        drawSingleColumn(i, histoParameters);
-        ctx.globalAlpha = obj.opacityDefault;
-      }
-    }
-    // Отрисовка времени каждого игрока
-    function drawPlayersTimes() {
-      for (var i = 0; i < times.length; i++) {
-        var currentTime = Math.round(times[i]);
-        drawSingleTime(currentTime, i, histoParameters);
-      }
-    }
-
-    // Отрисовка единичного имени
-    function drawSingleName(name, i, obj) {
-      var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
-
-      ctx.font = obj.namesFont;
-      ctx.textAlign = obj.namesTextAlign;
-      ctx.fillStyle = obj.namesTextColor;
-      ctx.fillText(name, columnCenterX, obj.namesStartY);
-    }
-    // Отрисовка единичной колонки
-    function drawSingleColumn(i, obj) {
+  }
+  // Отрисовка времени каждого игрока
+  function drawPlayersTimes(ctx, times, columnStep) {
+    for (var i = 0; i < times.length; i++) {
       var currentTime = Math.round(times[i]);
-      var columnX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns);
-      var columnHeight = currentTime * columnStep.toFixed(obj.histoPrecision);
-
-      ctx.fillRect(columnX, obj.histoStartY, obj.columnWidth, -columnHeight);
+      drawSingleTime(ctx, currentTime, i, histoParameters, columnStep);
     }
-    // Отрисовка единичного времени
-    function drawSingleTime(time, i, obj) {
-      var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
-      var columnHeight = time * columnStep.toFixed(obj.histoPrecision);
-      var columnTopY = obj.histoStartY - columnHeight;
-
-      ctx.font = obj.timesFont;
-      ctx.textAlign = obj.timesTextAlign;
-      ctx.fillStyle = obj.timesTextColor;
-      ctx.fillText(time, columnCenterX, columnTopY - obj.timesMargin);
-    }
-
-    drawPlayersNames(histoParameters);
-    drawHistoColumns(histoParameters);
-    drawPlayersTimes();
   }
 
-  drawStatisticsWindow();
-  drawStatisticsBorder();
-  drawStatisticsTitle();
-  drawHistogram();
-};
+  // Отрисовка единичного имени
+  function drawSingleName(ctx, name, i, obj) {
+    var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
+
+    ctx.font = obj.namesFont;
+    ctx.textAlign = obj.namesTextAlign;
+    ctx.fillStyle = obj.namesTextColor;
+    ctx.fillText(name, columnCenterX, obj.namesStartY);
+  }
+  // Отрисовка единичной колонки
+  function drawSingleColumn(ctx, times, i, obj, columnStep) {
+    var currentTime = Math.round(times[i]);
+    var columnX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns);
+    var columnHeight = currentTime * columnStep.toFixed(obj.histoPrecision);
+
+    ctx.fillRect(columnX, obj.histoStartY, obj.columnWidth, -columnHeight);
+  }
+  // Отрисовка единичного времени
+  function drawSingleTime(ctx, time, i, obj, columnStep) {
+    var columnCenterX = obj.histoStartX + i * (obj.columnWidth + obj.spaceBetweenColumns) + obj.columnWidth / 2;
+    var columnHeight = time * columnStep.toFixed(obj.histoPrecision);
+    var columnTopY = obj.histoStartY - columnHeight;
+
+    ctx.font = obj.timesFont;
+    ctx.textAlign = obj.timesTextAlign;
+    ctx.fillStyle = obj.timesTextColor;
+    ctx.fillText(time, columnCenterX, columnTopY - obj.timesMargin);
+  }
+})();

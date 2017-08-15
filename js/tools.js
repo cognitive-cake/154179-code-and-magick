@@ -14,10 +14,23 @@ window.tools = (function () {
     }
     return maxValue;
   }
+  function findValue(arr, valueToMatch) {
+    var result;
+    for (var i = 0; i < arr.length; i++) {
+      var currentValue = arr[i];
+
+      if (currentValue === valueToMatch) {
+        result = i;
+        break;
+      }
+    }
+    return result;
+  }
 
   var obj = {
     getRandomNumber: getRandomNumber,
-    getMaxValue: getMaxValue
+    getMaxValue: getMaxValue,
+    findValue: findValue
   };
 
   return obj;
