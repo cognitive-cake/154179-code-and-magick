@@ -61,9 +61,9 @@
   ];
 
   window.setup = (function () {
-    document.querySelector('.setup').classList.remove('hidden');
-
-    function generateRandomPersons(array) {
+    var template = document.querySelector('#similar-wizard-template');
+    // Запись случайных значений в массив с характеристиками других игроков
+    function recordRandomPersons(array) {
       var randomValue = window.tools.getRandomValueOfArray;
       for (var i = 0; i < array.length; i++) {
         var currentObj = array[i];
@@ -72,6 +72,9 @@
         currentObj.eyesColor = randomValue(COLOR_EYES);
       }
     }
-    generateRandomPersons(otherPlayers);
+
+    document.querySelector('.setup').classList.remove('hidden');
+
+    recordRandomPersons(otherPlayers);
   })();
 })();
