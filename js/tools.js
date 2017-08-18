@@ -14,10 +14,14 @@ window.tools = (function () {
     }
     return maxValue;
   }
+  function getRandomValueOfArray(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 
   var obj = {
     getRandomNumber: getRandomNumber,
-    getMaxValue: getMaxValue
+    getMaxValue: getMaxValue,
+    getRandomValueOfArray: getRandomValueOfArray
   };
 
   return obj;

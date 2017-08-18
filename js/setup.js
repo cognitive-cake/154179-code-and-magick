@@ -1,12 +1,6 @@
 'use strict';
 
-(function () {
-  window.setup = (function () {
-    document.querySelector('.setup').classList.remove('hidden');
-
-
-  })();
-
+(function () { // Уместно ли выводить из метода .setup массивы с данными, как в предыдущем задании?
   var PLAYERS_FIRST_NAMES = [ // Это константа? Или стоило назвать как обычный массив?
     'Иван',
     'Хуан Себастьян',
@@ -65,4 +59,19 @@
       eyesColor: ''
     }
   ];
+
+  window.setup = (function () {
+    document.querySelector('.setup').classList.remove('hidden');
+
+    function generateRandomPersons(array) {
+      var randomValue = window.tools.getRandomValueOfArray;
+      for (var i = 0; i < array.length; i++) {
+        var currentObj = array[i];
+        currentObj.name = randomValue(PLAYERS_FIRST_NAMES) + ' ' + randomValue(PLAYERS_SECOND_NAMES);
+        currentObj.coatColor = randomValue(COLOR_COAT);
+        currentObj.eyesColor = randomValue(COLOR_EYES);
+      }
+    }
+    generateRandomPersons(otherPlayers);
+  })();
 })();
