@@ -1,7 +1,11 @@
 'use strict';
 
-window.setup = (function () {
-  document.querySelector('.setup').classList.remove('hidden');
+(function () {
+  window.setup = (function () {
+    document.querySelector('.setup').classList.remove('hidden');
+
+
+  })();
 
   var PLAYERS_FIRST_NAMES = [ // Это константа? Или стоило назвать как обычный массив?
     'Иван',
