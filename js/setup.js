@@ -62,6 +62,8 @@
 
   window.setup = (function () {
     var template = document.querySelector('#similar-wizard-template');
+    var fragment = document.createDocumentFragment();
+
     // Запись случайных значений в массив с характеристиками других игроков
     function recordRandomPersons(array) {
       var randomValue = window.tools.getRandomValueOfArray;
@@ -73,8 +75,17 @@
       }
     }
 
-    document.querySelector('.setup').classList.remove('hidden');
+    // Создание единичного DOM-элемента для похожего игрока.
+    function createSingleSimilarPlayer(index, array) {
+      var cloneNode = template.content.cloneNode('true');
+      var playerData = array[index];
+      cloneNode.querySelector('.setup-similar-label').textContent = playerData.name;
+      cloneNode.querySelector('.wizard-coat').style = 'fill: ' + playerData.coatColor;
+      cloneNode.querySelector('.wizard-eyes').style = 'fill: ' + playerData.eyesColor;
+      return cloneNode;
+    }
 
+    document.querySelector('.setup').classList.remove('hidden');
     recordRandomPersons(otherPlayers);
   })();
 })();
