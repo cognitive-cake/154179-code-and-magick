@@ -62,7 +62,7 @@
 
   window.setup = (function () {
     var template = document.querySelector('#similar-wizard-template');
-    var fragment = document.createDocumentFragment();
+    var listOfSimilarPlayers = document.querySelector('.setup-similar-list');
 
     // Запись случайных значений в массив с характеристиками других игроков
     function recordRandomPersons(array) {
@@ -74,18 +74,27 @@
         currentObj.eyesColor = randomValue(COLOR_EYES);
       }
     }
-
-    // Создание единичного DOM-элемента для похожего игрока.
-    function createSingleSimilarPlayer(index, array) {
+    // Создание единичной карточки похожего игрока
+    function createSingleSimilarPlayer(obj) {
       var cloneNode = template.content.cloneNode('true');
-      var playerData = array[index];
+      var playerData = obj;
       cloneNode.querySelector('.setup-similar-label').textContent = playerData.name;
       cloneNode.querySelector('.wizard-coat').style = 'fill: ' + playerData.coatColor;
       cloneNode.querySelector('.wizard-eyes').style = 'fill: ' + playerData.eyesColor;
       return cloneNode;
     }
+    // Создание списка похожих персонажей
+    function createListOfSimilarPlayers(array) {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < array.length; i++) {
+        fragment.appendChild(createSingleSimilarPlayer(array[i]));
+      }
+      return fragment;
+    }
 
     document.querySelector('.setup').classList.remove('hidden');
+    document.querySelector('.setup-similar').classList.remove('hidden');
     recordRandomPersons(otherPlayers);
+    listOfSimilarPlayers.appendChild(createListOfSimilarPlayers(otherPlayers));
   })();
 })();
