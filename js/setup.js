@@ -1,8 +1,12 @@
 'use strict';
 
-(function () { // Уместно ли выводить из метода .setup массивы с данными, как в предыдущем задании?
+(function () {
   var template = document.querySelector('#similar-wizard-template');
   var listOfSimilarPlayers = document.querySelector('.setup-similar-list');
+
+  var taskParameters = {
+    amountOfPersons: 4
+  };
 
   var PLAYERS_FIRST_NAMES = [
     'Иван',
@@ -24,7 +28,7 @@
     'Нионго',
     'Ирвинг'
   ];
-  var COLOR_COAT = [
+  var COLORS_COAT = [
     'rgb(101, 137, 164)',
     'rgb(241, 43, 107)',
     'rgb(146, 100, 161)',
@@ -32,7 +36,7 @@
     'rgb(215, 210, 55)',
     'rgb(0, 0, 0)'
   ];
-  var COLOR_EYES = [
+  var COLORS_EYES = [
     'black',
     'red',
     'blue',
@@ -40,43 +44,26 @@
     'green'
   ];
 
-  var otherPlayers = [
-    {
-      name: '',
-      coatColor: '',
-      eyesColor: ''
-    },
-    {
-      name: '',
-      coatColor: '',
-      eyesColor: ''
-    },
-    {
-      name: '',
-      coatColor: '',
-      eyesColor: ''
-    },
-    {
-      name: '',
-      coatColor: '',
-      eyesColor: ''
+  // Создание характеристик персонажей и запись их в массив
+  function createArrayOfSimilarPersons() {
+    var array = [];
+    for (var i = 0; i < taskParameters.amountOfPersons; i++) {
+      array.push(createDataForSinglePerson());
     }
-  ];
-
-  // Запись случайных значений в массив с характеристиками других игроков
-  function recordRandomPersons(array) {
+    return array;
+  }
+  function createDataForSinglePerson() {
     var randomValue = window.tools.getRandomValueOfArray;
-    for (var i = 0; i < array.length; i++) {
-      var currentObj = array[i];
-      currentObj.name = randomValue(PLAYERS_FIRST_NAMES) + ' ' + randomValue(PLAYERS_SECOND_NAMES);
-      currentObj.coatColor = randomValue(COLOR_COAT);
-      currentObj.eyesColor = randomValue(COLOR_EYES);
-    }
+    var newPerson = {
+      name: randomValue(PLAYERS_FIRST_NAMES) + ' ' + randomValue(PLAYERS_SECOND_NAMES),
+      coatColor: randomValue(COLORS_COAT),
+      eyesColor: randomValue(COLORS_EYES)
+    };
+    return newPerson;
   }
   // Создание единичной карточки похожего игрока
-  function createSingleSimilarPlayer(obj) {
+  function createSingleSimilarPlayer(playerData) {
     var cloneNode = template.content.cloneNode('true');
-    var playerData = obj;
     cloneNode.querySelector('.setup-similar-label').textContent = playerData.name;
     cloneNode.querySelector('.wizard-coat').style = 'fill: ' + playerData.coatColor;
     cloneNode.querySelector('.wizard-eyes').style = 'fill: ' + playerData.eyesColor;
@@ -91,8 +78,9 @@
     return fragment;
   }
 
+  var otherPlayers = createArrayOfSimilarPersons();
+  var documentFragment = createListOfSimilarPlayers(otherPlayers);
   document.querySelector('.setup').classList.remove('hidden');
   document.querySelector('.setup-similar').classList.remove('hidden');
-  recordRandomPersons(otherPlayers);
-  listOfSimilarPlayers.appendChild(createListOfSimilarPlayers(otherPlayers));
+  listOfSimilarPlayers.appendChild(documentFragment);
 })();
