@@ -4,6 +4,9 @@ window.tools = (function () {
   function getRandomNumber(min, max) {
     return (Math.random() * (max - min) + min);
   }
+  function getRandomRoundNumber(min, max) {
+    return Math.round((Math.random() * (max - min) + min));
+  }
   function getMaxValue(array) {
     var maxValue = -1;
     for (var i = 0; i < array.length; i++) {
@@ -14,10 +17,15 @@ window.tools = (function () {
     }
     return maxValue;
   }
+  function getRandomValueOfArray(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 
   var obj = {
     getRandomNumber: getRandomNumber,
-    getMaxValue: getMaxValue
+    getRandomRoundNumber: getRandomRoundNumber,
+    getMaxValue: getMaxValue,
+    getRandomValueOfArray: getRandomValueOfArray
   };
 
   return obj;
