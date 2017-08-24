@@ -73,7 +73,9 @@
   function createListOfSimilarPlayers(array) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < array.length; i++) {
-      fragment.appendChild(createSingleSimilarPlayer(array[i]));
+      var object = array[i];
+      var player = createSingleSimilarPlayer(object);
+      fragment.appendChild(player);
     }
     return fragment;
   }
